@@ -11,7 +11,7 @@
   max-height: calc(100vh - 80px);
 }
 .grid {
-  font-size: 10vw;
+  font-size: min(10vw, 18vh);
   display: flex;
   flex-direction: column;
 }

@@ -1,20 +1,36 @@
-/* You can add global styles to this file, and also import other style files */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
-table {
+
+.grid {
+  width: 100vw;
+  height: calc(100vh - 80px);
+}
+.grid {
   font-size: 80px;
+  display: flex;
+  flex-direction: column;
+}
+.row {
+  display: flex;
+  flex-grow: 1;
+}
+.col {
+  flex-grow: 1;
 }
 
 .card {
-  width: 150px;
-  height: 150px;
   margin: 25px;
   perspective: 800px; /* Adds perspective for the 3D flip */
+  min-width: 80px;
+  min-height: 80px;
+  width: calc(100% - 50px);
+  height: calc(100% - 50px);
 }
 .card__face {
+  border: 1px solid green;
   position: absolute;
   width: 100%;
   height: 100%;

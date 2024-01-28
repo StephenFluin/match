@@ -2,6 +2,9 @@ import { JsonPipe, NgClass } from '@angular/common';
 import { ChangeDetectorRef, Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 
+const splitEmoji = (s: string) =>
+  [...new Intl.Segmenter().segment(s)].map((x) => x.segment);
+
 interface Card {
   x?: number;
   y?: number;
@@ -15,14 +18,16 @@ interface Card {
   standalone: true,
   imports: [RouterOutlet, JsonPipe, NgClass],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.scss',
 })
 export class AppComponent {
   title = 'match';
   width = 4;
   height = 3;
   grid: Card[][] = [];
-  symbols = ['😍', '🤢', '💩', '💋', '👩‍🎤', '🧜‍♀️', '👑'];
+
+  symbols = splitEmoji(
+    '😍🤢💩💋👩‍🎤🧜‍♀️👑🍱🍕🍿⚽️🏀🏈✈️🛳🎡🎢🛝🏩📪✏️🔍💵🔔🇺🇸🇨🇷🇬🇧🇦🇺'
+  );
   bgPicture = '';
 
   firstPick?: Card;

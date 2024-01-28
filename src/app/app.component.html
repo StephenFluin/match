@@ -1,13 +1,13 @@
-<h1>Match Game!</h1>
-<table>
+<div class="grid">
   @for( row of grid; track $index) {
-  <tr class="row">
+  <div class="row">
     @for(cell of row; track $index) {
-    <td class="col">
+    <div class="col">
       <div class="card" [ngClass]="cell.flipped ? 'is-flipped' : ''">
-        <div class="card__face card__face--back">
-          {{ cell.picture }}
-        </div>
+        <div
+          class="card__face card__face--back"
+          [innerHTML]="cell.picture"
+        ></div>
         <div class="card__face card__face--front" (click)="toggle(cell)">
           <span>{{ bgPicture }}</span>
         </div>
@@ -15,9 +15,9 @@
       <!-- <span style="font-size: 12px"
         >Flipped: {{ cell.flipped }} Matched: {{ cell.matched }}</span
       > -->
-    </td>
+    </div>
     }
-  </tr>
+  </div>
   }
-</table>
+</div>
 <div>{{ moves }} moves</div>

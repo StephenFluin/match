@@ -24,8 +24,6 @@
 .card {
   margin: 25px;
   perspective: 800px; /* Adds perspective for the 3D flip */
-  min-width: 80px;
-  min-height: 80px;
   width: calc(100% - 50px);
   height: calc(100% - 50px);
 }
@@ -58,4 +56,10 @@
 
 .card.is-flipped .card__face--back {
   transform: rotateY(0);
+}
+
+@media (max-width: 767px) {
+  .grid {
+    font-size: 40px;
+  }
 }

@@ -20,4 +20,13 @@
   </div>
   }
 </div>
-<div>{{ moves }} moves</div>
+<div>
+  {{ moves }} moves - {{ wins }} wins - card speed ({{ unflipSpeed }})
+  <input
+    type="range"
+    min="300"
+    max="5000"
+    #speed
+    (change)="unflipSpeed = speed.value"
+  />
+</div>

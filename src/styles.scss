@@ -44,11 +44,11 @@
 }
 
 .card__face--front {
-  background-color: #fff; /* Example front styling */
+  background-color: #fff;
 }
 
 .card__face--back {
-  background-color: #eff; /* Example back styling */
+  background-color: #eff;
   transform: rotateY(180deg); /* Initially rotated backwards */
 }
 

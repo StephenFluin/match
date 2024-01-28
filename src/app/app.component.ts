@@ -29,11 +29,13 @@ export class AppComponent {
     '😍🤢💩💋👩‍🎤🧜‍♀️👑🍱🍕🍿⚽️🏀🏈✈️🛳🎡🎢🛝🏩📪✏️🔍💵🔔🇺🇸🇨🇷🇬🇧🇦🇺'
   );
   bgPicture = '';
+  unflipSpeed = '1000';
 
   firstPick?: Card;
   secondPick?: Card;
   waiting: number | undefined;
   moves = 0;
+  wins = 0;
 
   constructor(private changeDetector: ChangeDetectorRef) {
     this.randomlyPlaceSymbols();
@@ -63,7 +65,7 @@ export class AppComponent {
         this.secondPick = card;
         this.waiting = <any>setTimeout(() => {
           this.resetPick(card);
-        }, 3000);
+        }, parseInt(this.unflipSpeed, 10));
       }
       return;
     }
@@ -140,6 +142,7 @@ export class AppComponent {
     }
     setTimeout(() => {
       alert('You win!');
+      this.wins++;
       this.grid = [];
       setTimeout(() => {
         this.randomlyPlaceSymbols();

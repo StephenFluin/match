@@ -3,8 +3,8 @@ import { ChangeDetectorRef, Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 
 interface Card {
-  x: number;
-  y: number;
+  x?: number;
+  y?: number;
   picture: string;
   flipped: boolean;
   matched: boolean;
@@ -30,20 +30,7 @@ export class AppComponent {
   waiting: number | undefined;
 
   constructor(private changeDetector: ChangeDetectorRef) {
-    for (let y = 0; y < this.height; y++) {
-      const row: Card[] = [];
-      for (let x = 0; x < this.width; x++) {
-        row.push({
-          x,
-          y,
-          picture:
-            this.symbols[Math.floor(Math.random() * this.symbols.length)],
-          flipped: false,
-          matched: false,
-        });
-      }
-      this.grid.push(row);
-    }
+    this.randomlyPlaceSymbols();
   }
   toggle(card: Card) {
     // console.log('toggling', card, this.firstPick);
@@ -63,6 +50,7 @@ export class AppComponent {
         this.firstPick.matched = true;
         this.firstPick.flipped = true;
         this.firstPick = undefined;
+        this.checkForWin();
       } else {
         card.flipped = true;
         this.secondPick = card;
@@ -92,5 +80,63 @@ export class AppComponent {
     }
     this.changeDetector.detectChanges();
     this.firstPick = undefined;
+  }
+  randomlyPlaceSymbols() {
+    if (this.symbols.length * 2 < this.width * this.height) {
+      console.error('not enough symbols for this grid');
+      return;
+    }
+    this.grid = [];
+    // Create a random array of cards based on the symbols
+    // With width*height/2 symbols, or (width*height-1)/2
+    let count = this.width * this.height;
+    if (count % 2 !== 0) {
+      count--;
+    }
+    let symbolCount = count / 2;
+    this.symbols.sort(() => Math.random() - 0.5);
+    const cardList: Card[] = [];
+    for (let i = 0; i < symbolCount; i++) {
+      cardList.push({
+        picture: this.symbols[i],
+        flipped: false,
+        matched: false,
+      });
+      cardList.push({
+        picture: this.symbols[i],
+        flipped: false,
+        matched: false,
+      });
+    }
+    for (let y = 0; y < this.height; y++) {
+      const row: Card[] = [];
+      for (let x = 0; x < this.width; x++) {
+        if (cardList.length <= 0) {
+          break;
+        }
+        const index = Math.floor(Math.random() * cardList.length);
+        cardList[index].x = x;
+        cardList[index].y = y;
+        row.push(cardList.splice(index, 1)[0]);
+      }
+      this.grid.push(row);
+    }
+  }
+  checkForWin() {
+    for (let y = 0; y < this.height; y++) {
+      for (let x = 0; x < this.width; x++) {
+        if (!this.grid[y][x]?.matched) {
+          return;
+        }
+      }
+    }
+    setTimeout(() => {
+      alert('You win!');
+      this.grid = [];
+      setTimeout(() => {
+        this.randomlyPlaceSymbols();
+      }, 1000);
+      this.changeDetector.detectChanges();
+    }, 1000);
   }
 }

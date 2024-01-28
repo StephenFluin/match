@@ -1,12 +1,17 @@
 /* You can add global styles to this file, and also import other style files */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 table {
   font-size: 80px;
 }
 
 .card {
-  width: 200px;
-  height: 300px;
-  margin: 50px auto;
+  width: 150px;
+  height: 150px;
+  margin: 25px;
   perspective: 800px; /* Adds perspective for the 3D flip */
 }
 .card__face {

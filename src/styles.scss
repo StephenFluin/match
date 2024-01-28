@@ -11,7 +11,7 @@
   max-height: calc(100vh - 80px);
 }
 .grid {
-  font-size: 80px;
+  font-size: 10vw;
   display: flex;
   flex-direction: column;
 }
@@ -58,10 +58,4 @@
 
 .card.is-flipped .card__face--back {
   transform: rotateY(0);
-}
-
-@media (max-width: 767px) or (max-height: 812px) {
-  .grid {
-    font-size: 40px;
-  }
 }

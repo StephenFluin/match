@@ -24,10 +24,10 @@
 }
 
 .card {
-  margin: 25px;
+  margin: 2dvh 2vw;
   perspective: 800px; /* Adds perspective for the 3D flip */
-  width: calc(100% - 50px);
-  height: calc(100% - 50px);
+  width: calc(100% - 4vw);
+  height: calc(100% - 4dvh);
 }
 .card__face {
   border: 1px solid green;

@@ -28,6 +28,7 @@ export class AppComponent {
   firstPick?: Card;
   secondPick?: Card;
   waiting: number | undefined;
+  moves = 0;
 
   constructor(private changeDetector: ChangeDetectorRef) {
     this.randomlyPlaceSymbols();
@@ -42,6 +43,7 @@ export class AppComponent {
       // console.log('cant click on that card');
       return;
     }
+    this.moves++;
     if (this.firstPick) {
       // console.log('checking for matches!');
       if (card.picture === this.firstPick.picture) {
@@ -87,6 +89,7 @@ export class AppComponent {
       return;
     }
     this.grid = [];
+    this.moves = 0;
     // Create a random array of cards based on the symbols
     // With width*height/2 symbols, or (width*height-1)/2
     let count = this.width * this.height;

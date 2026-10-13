@@ -14,10 +14,9 @@ interface Card {
 }
 
 @Component({
-  selector: 'app-root',
-  standalone: true,
-  imports: [RouterOutlet, JsonPipe, NgClass],
-  templateUrl: './app.component.html',
+    selector: 'app-root',
+    imports: [RouterOutlet, JsonPipe, NgClass],
+    templateUrl: './app.component.html'
 })
 export class AppComponent {
   title = 'match';

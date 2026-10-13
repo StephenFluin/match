@@ -1,9 +1,9 @@
 <div class="grid">
-  @for( row of grid; track $index) {
+  @for( row of grid(); track $index) {
   <div class="row">
     @for(cell of row; track $index) {
     <div class="col">
-      <div class="card" [ngClass]="cell.flipped ? 'is-flipped' : ''">
+      <div class="card" [ngClass]="cell.flipped() ? 'is-flipped' : ''">
         <div
           class="card__face card__face--back"
           [innerHTML]="cell.picture"
@@ -21,12 +21,12 @@
   }
 </div>
 <div>
-  {{ moves }} moves - {{ wins }} wins - card speed ({{ unflipSpeed }})
+  {{ moves() }} moves - {{ wins() }} wins - card speed ({{ unflipSpeed() }})
   <input
     type="range"
     min="300"
     max="5000"
     #speed
-    (change)="unflipSpeed = speed.value"
+    (change)="unflipSpeed.set(speed.value)"
   />
 </div>

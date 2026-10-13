@@ -1,5 +1,5 @@
 import { JsonPipe, NgClass } from '@angular/common';
-import { ChangeDetectorRef, Component } from '@angular/core';
+import { Component, signal, WritableSignal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 
 const splitEmoji = (s: string) =>
@@ -9,8 +9,8 @@ interface Card {
   x?: number;
   y?: number;
   picture: string;
-  flipped: boolean;
-  matched: boolean;
+  flipped: WritableSignal<boolean>;
+  matched: WritableSignal<boolean>;
 }
 
 @Component({
@@ -22,21 +22,21 @@ export class AppComponent {
   title = 'match';
   width = 4;
   height = 3;
-  grid: Card[][] = [];
+  grid = signal<Card[][]>([]);
 
   symbols = splitEmoji(
     '😍🤢💩💋👩‍🎤🧜‍♀️👑🍱🍕🍿⚽️🏀🏈✈️🛳🎡🎢🛝🏩📪✏️🔍💵🔔🇺🇸🇨🇷🇬🇧🇦🇺'
   );
   bgPicture = '';
-  unflipSpeed = '1000';
+  unflipSpeed = signal('1000');
 
   firstPick?: Card;
   secondPick?: Card;
   waiting: number | undefined;
-  moves = 0;
-  wins = 0;
+  moves = signal(0);
+  wins = signal(0);
 
-  constructor(private changeDetector: ChangeDetectorRef) {
+  constructor() {
     this.randomlyPlaceSymbols();
   }
   toggle(card: Card) {
@@ -45,30 +45,30 @@ export class AppComponent {
       // console.log('skipping wait for timeout');
       this.resetPick(card);
     }
-    if (card.matched || card.flipped) {
+    if (card.matched() || card.flipped()) {
       // console.log('cant click on that card');
       return;
     }
-    this.moves++;
+    this.moves.update((m) => m + 1);
     if (this.firstPick) {
       // console.log('checking for matches!');
       if (card.picture === this.firstPick.picture) {
-        card.matched = true;
-        card.flipped = true;
-        this.firstPick.matched = true;
-        this.firstPick.flipped = true;
+        card.matched.set(true);
+        card.flipped.set(true);
+        this.firstPick.matched.set(true);
+        this.firstPick.flipped.set(true);
         this.firstPick = undefined;
         this.checkForWin();
       } else {
-        card.flipped = true;
+        card.flipped.set(true);
         this.secondPick = card;
         this.waiting = <any>setTimeout(() => {
           this.resetPick(card);
-        }, parseInt(this.unflipSpeed, 10));
+        }, parseInt(this.unflipSpeed(), 10));
       }
       return;
     }
-    card.flipped = true;
+    card.flipped.set(true);
     this.firstPick = card;
   }
   resetPick(card: Card) {
@@ -76,17 +76,16 @@ export class AppComponent {
       console.error('resetting at a weird state', card, this.firstPick);
       return;
     }
-    card.flipped = false;
-    this.firstPick.flipped = false;
+    card.flipped.set(false);
+    this.firstPick.flipped.set(false);
     if (this.secondPick) {
-      this.secondPick.flipped = false;
+      this.secondPick.flipped.set(false);
       this.secondPick = undefined;
     }
     if (this.waiting) {
       clearTimeout(this.waiting);
       this.waiting = 0;
     }
-    this.changeDetector.detectChanges();
     this.firstPick = undefined;
   }
   randomlyPlaceSymbols() {
@@ -94,8 +93,8 @@ export class AppComponent {
       console.error('not enough symbols for this grid');
       return;
     }
-    this.grid = [];
-    this.moves = 0;
+    const grid: Card[][] = [];
+    this.moves.set(0);
     // Create a random array of cards based on the symbols
     // With width*height/2 symbols, or (width*height-1)/2
     let count = this.width * this.height;
@@ -106,16 +105,13 @@ export class AppComponent {
     this.symbols.sort(() => Math.random() - 0.5);
     const cardList: Card[] = [];
     for (let i = 0; i < symbolCount; i++) {
-      cardList.push({
-        picture: this.symbols[i],
-        flipped: false,
-        matched: false,
-      });
-      cardList.push({
-        picture: this.symbols[i],
-        flipped: false,
-        matched: false,
-      });
+      for (let copy = 0; copy < 2; copy++) {
+        cardList.push({
+          picture: this.symbols[i],
+          flipped: signal(false),
+          matched: signal(false),
+        });
+      }
     }
     for (let y = 0; y < this.height; y++) {
       const row: Card[] = [];
@@ -128,25 +124,25 @@ export class AppComponent {
         cardList[index].y = y;
         row.push(cardList.splice(index, 1)[0]);
       }
-      this.grid.push(row);
+      grid.push(row);
     }
+    this.grid.set(grid);
   }
   checkForWin() {
     for (let y = 0; y < this.height; y++) {
       for (let x = 0; x < this.width; x++) {
-        if (!this.grid[y][x]?.matched) {
+        if (!this.grid()[y][x]?.matched()) {
           return;
         }
       }
     }
     setTimeout(() => {
       alert('You win!');
-      this.wins++;
-      this.grid = [];
+      this.wins.update((w) => w + 1);
+      this.grid.set([]);
       setTimeout(() => {
         this.randomlyPlaceSymbols();
       }, 1000);
-      this.changeDetector.detectChanges();
     }, 1000);
   }
 }
